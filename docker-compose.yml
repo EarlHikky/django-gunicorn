@@ -1,0 +1,38 @@
+volumes:
+    pgdata:
+        driver: local
+    static: 
+    media:
+    major_site:  
+    database:  
+    logs:
+services:
+    nginx: 
+        restart: always
+        image: nginx:stable-alpine3.17
+        expose:
+          - 8080
+        ports:
+          - "80:8080"
+        volumes:
+            - ./logs:/srv/www/major_site/logs
+            - ./nginx:/etc/nginx/conf.d
+            - ./static:/srv/www/major_site/static
+            - ./media:/srv/www/major_site/media
+        depends_on:
+            - django_gunicron
+    django_gunicron:
+        image: earlhikky/django-gunicorn:dev
+        volumes:
+            - ./static:/srv/www/major_site/static
+            - ./media:/srv/www/major_site/media
+            - ./database:/srv/www/major_site/database
+            - ./logs:/srv/www/major_site/logs
+        env_file:
+            - .env
+        expose:
+          - 8000        
+        command: "gunicorn -c gunicorn.py major_site.wsgi --bind 0.0.0.0:8000"
+        
+
+

@@ -22,7 +22,7 @@ services:
         depends_on:
             - django_gunicron
     django_gunicron:
-        image: earlhikky/django-gunicorn:dev
+        image: earlhikky/django-gunicorn:stable
         volumes:
             - ./static:/srv/www/major_site/static
             - ./media:/srv/www/major_site/media
